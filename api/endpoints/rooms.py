@@ -13,7 +13,7 @@ async def get_rooms():
     return await Room_Pydantic.from_queryset(RoomModel.all())
 
 @router.post('/')
-async def post_room(room: RoomTypeIn_Pydantic, current_user_role:Role_Pydantic=Depends(get_current_user_role)):
+async def post_room(room: RoomIn_Pydantic, current_user_role:Role_Pydantic=Depends(get_current_user_role)):
     if current_user_role.role != 'Admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
     obj = await RoomModel.create(**room.dict(exclude_unset=True))
@@ -27,7 +27,7 @@ async def get_single_room(id:int):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Room {id} does not exist')
 
 @router.put('/{id}')
-async def update_room(id: int,room: RoomTypeIn_Pydantic, current_user_role:Role_Pydantic=Depends(get_current_user_role)):
+async def update_room(id: int,room: RoomIn_Pydantic, current_user_role:Role_Pydantic=Depends(get_current_user_role)):
     if current_user_role.role != 'Admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
     obj = await RoomModel.filter(id=id).update(**room.dict())
