@@ -10,7 +10,8 @@ router = APIRouter(prefix='/api/rooms', tags=["rooms"])
 
 @router.get('/')
 async def get_rooms():
-    return await Room_Pydantic.from_queryset(RoomModel.all())
+    # return await Room_Pydantic.from_queryset(RoomModel.all())
+    return await Room_Pydantic.from_queryset(RoomModel.filter(is_booked=False))
 
 @router.post('/')
 async def post_room(room: RoomIn_Pydantic, current_user_role:Role_Pydantic=Depends(get_current_user_role)):
