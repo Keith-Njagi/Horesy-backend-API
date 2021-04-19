@@ -1,15 +1,10 @@
 import os
 
-import requests
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
-from fastapi_mail import FastMail, MessageSchema
-from fastapi.templating import Jinja2Templates
 from starlette.responses import JSONResponse
-from starlette.requests import Request
 
-from . import conf
-from models import UserModel, ActivationTokenModel
-from schemas.auth import  User_Pydantic, UserIn_Pydantic
+from models import UserModel
+from schemas.schemas import  User_Pydantic, UserIn_Pydantic
 from utilities.auth import RoleChecker, get_current_user, get_current_user_token
 
 router = APIRouter(prefix='/api/usr', tags=["user"])

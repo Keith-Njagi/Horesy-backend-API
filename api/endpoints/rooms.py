@@ -5,7 +5,7 @@ from models import RoomTypeModel, RoomModel
 from schemas.schemas import RoomType_Pydantic, RoomTypeIn_Pydantic, Room_Pydantic, RoomIn_Pydantic, Role_Pydantic
 from utilities.auth import get_current_user_role
 
-router = APIRouter(prefix='/api/rooms')
+router = APIRouter(prefix='/api/rooms', tags=["rooms"])
 # CRUD FOR ROOMS AND ROOM TYPES
 
 @router.get('/')
@@ -21,7 +21,7 @@ async def post_room(room: RoomTypeIn_Pydantic, current_user_role:Role_Pydantic=D
 
 @router.get('/{id}')
 async def get_single_room(id:int):
-        room = await RoomModel.get(id=id)
+    room = await RoomModel.get(id=id)
     if room:
         return await Room_Pydantic.from_tortoise_orm(room)
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Room {id} does not exist')

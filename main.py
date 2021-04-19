@@ -19,12 +19,16 @@ tags_metadata = [
         "description": "Normal user operations",
     },
     {
-        "name": "reception",
-        "description": "Receptionist operations",
+        "name": "rooms",
+        "description": "Room and room type operations",
     },
     {
-        "name": "admins",
-        "description": "Admin operations", 
+        "name": "bookings",
+        "description": "Bookings operations", 
+    },
+        {
+        "name": "payments",
+        "description": "Payments operations", 
     }
 ]
 
@@ -48,7 +52,6 @@ register_tortoise(
     # db_url="sqlite://db.sqlite3",
     db_url=settings.DATABASE_URI,
     modules={'models':['models']},
-    # modules={'models':['models.users', 'models.rooms', 'models.roles', 'models.bookings']},
     generate_schemas=True,
     add_exception_handlers=True
 )

@@ -26,17 +26,16 @@ class Password(BaseModel):
 Role_Pydantic = pydantic_model_creator(RoleModel, name="Role")
 RoleIn_Pydantic = pydantic_model_creator(RoleModel, name="RoleIn", exclude_readonly=True)
 
-
-UserRole_Pydantic = pydantic_model_creator(UserRoleModel, name="UserRole")
-UserRoleIn_Pydantic = pydantic_model_creator(UserRoleModel, name="UserRoleIn", exclude_readonly=True)
-
-# RoomTypeModel, RoomModel, BookingModel, PaymentModel
-
 RoomType_Pydantic = pydantic_model_creator(RoomTypeModel, name="RoomType")
 RoomTypeIn_Pydantic = pydantic_model_creator(RoomTypeModel, name="RoomTypeIn", exclude_readonly=True)
 
 Room_Pydantic = pydantic_model_creator(RoomModel, name="Room")
 RoomIn_Pydantic = pydantic_model_creator(RoomModel, name="RoomIn", exclude_readonly=True)
+
+
+UserRole_Pydantic = pydantic_model_creator(UserRoleModel, name="UserRole")
+UserRoleIn_Pydantic = pydantic_model_creator(UserRoleModel, name="UserRoleIn", exclude_readonly=True)
+
 
 Booking_Pydantic = pydantic_model_creator(BookingModel, name="Booking")
 BookingIn_Pydantic = pydantic_model_creator(BookingModel, name="BookingIn", exclude_readonly=True)

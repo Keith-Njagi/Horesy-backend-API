@@ -1,10 +1,10 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from models import BookingModel
 from schemas.schemas import Booking_Pydantic, BookingIn_Pydantic, User_Pydantic, Role_Pydantic
 from utilities.auth import get_current_user, get_current_user_role
 
-router = APIRouter(prefix='/api/bookings')
+router = APIRouter(prefix='/api/bookings', tags=["bookings"])
 # CRUD FOR BOOKINGS
 
 @router.get('/')

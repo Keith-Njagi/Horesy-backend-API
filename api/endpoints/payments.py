@@ -1,10 +1,10 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from models import PaymentModel
 from schemas.schemas import Payment_Pydantic, PaymentIn_Pydantic, User_Pydantic, Role_Pydantic
 from utilities.auth import get_current_user, get_current_user_role
 
-router = APIRouter(prefix='/api/payments')
+router = APIRouter(prefix='/api/payments', tags=["payments"])
 # CRUD FOR BOOKINGS
 
 @router.get('/')

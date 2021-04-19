@@ -34,7 +34,6 @@ class UserModel(Model):
     def verify_password(self, password):
         return bcrypt.verify(password, self.password_hash)
 
-
 class RoleModel(Model):
     id = fields.IntField(pk=True)
     role = fields.CharField(max_length=30, null=False,)
@@ -96,7 +95,7 @@ class RoomModel(Model):
 class BookingModel(Model):
     id = fields.IntField(pk=True)
     room: fields.ForeignKeyRelation[RoomModel] = fields.ForeignKeyField("models.RoomModel", related_name="bookings", on_delete='CASCADE')
-    user: fields.ForeignKeyRelation[UserModel] = fields.ForeignKeyField("models.UserModel", related_name="user_roles", on_delete='CASCADE')
+    user: fields.ForeignKeyRelation[UserModel] = fields.ForeignKeyField("models.UserModel", related_name="bookings", on_delete='CASCADE')
     date_from = fields.DatetimeField(null=False, use_tz = True)
     date_to = fields.DatetimeField(null=True, use_tz = True)
     created_at = fields.DatetimeField(null=False, auto_now_add=True, use_tz = True)
