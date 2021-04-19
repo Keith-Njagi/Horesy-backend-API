@@ -3,3 +3,11 @@ Roles
 Rooms
 Bookings
 Payments
+
+
+1. Authentication with roles
+2. Add rooms in horesy
+3. Edit room types and details
+4. Users room search and room booking
+5. Registration of payments & room checkins.
+6. checkouts
