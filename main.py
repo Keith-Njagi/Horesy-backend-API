@@ -15,7 +15,7 @@ tags_metadata = [
         "description": "Authentication/Authorization routes",
     },
     {
-        "name": "users",
+        "name": "user",
         "description": "Normal user operations",
     },
     {

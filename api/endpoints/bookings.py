@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
-from models import BookingModel
-from schemas.schemas import Booking_Pydantic, BookingIn_Pydantic, User_Pydantic, Role_Pydantic
+from models import BookingModel, RoomModel
+from schemas.schemas import Booking_Pydantic, BookingIn_Pydantic, User_Pydantic, Role_Pydantic, Room_Pydantic
 from utilities.auth import get_current_user, get_current_user_role
 
 router = APIRouter(prefix='/api/bookings', tags=["bookings"])
@@ -16,6 +16,7 @@ async def get_bookings(current_user_role:Role_Pydantic=Depends(get_current_user_
 @router.post('/')
 async def post_booking(booking: BookingIn_Pydantic, current_user:User_Pydantic=Depends(get_current_user)):
     obj = await BookingModel.create(**booking.dict, user_id=current_user.id)
+    await RoomModel.filter(id=booking.room_id).update(is_booked=True)
     return await Booking_Pydantic.from_tortoise_orm(obj)
 
 @router.get('/{id}')
