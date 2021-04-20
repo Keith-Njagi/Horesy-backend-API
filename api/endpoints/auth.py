@@ -40,8 +40,10 @@ async def register(auth_detail: UserIn, role: Optional[str]=None):
         new_user_role = await UserRoleModel.create(user_id=user_id, role_id=db_role.id)
     else:     
         new_user_role = await UserRoleModel.create(user_id=user_id, role_id=usr_role)
-
-    return user
+        user = await User_Pydantic.from_tortoise_orm(obj)
+    
+    this_user = await UserModel.get(id=user.id)
+    return await User_Pydantic.from_tortoise_orm(this_user)
 
 # Activation link to redirect to login page
 
@@ -54,19 +56,17 @@ async def login(auth_form:  OAuth2PasswordRequestForm = Depends()):
     if not user or not user.verify_password(password=auth_form.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid username or password')
 
-    UserPrivilege.generate_user_role(user_id = this_user.id)
+    UserPrivilege.generate_user_role(user_id = user.id)
     user_id = UserPrivilege.user_id
     role = UserPrivilege.role
     # Ensure all roles are saved to the db before registering the role to user
-    db_roles = UserRoleModel.fetch_all()
+    db_roles = await UserRoleModel.all()
     all_privileges = UserPrivilege.all_privileges
-    if len(db_roles) == 0:
+    if db_roles.count(db_roles) == 0:
         for key, value in all_privileges.items():
-            new_role = RoleModel(role=value)
-            new_role.insert_record()
+            new_role = RoleModel.create(role=value)
     # Link role to user
-    new_user_role = UserRoleModel(user_id=user_id, role_id=role)
-    new_user_role.insert_record()
+    new_user_role = UserRoleModel.create(user_id=user_id, role_id=role)
     
     user_id = user.id
     user_role = await UserRoleModel.get(user_id=user_id)
@@ -75,5 +75,7 @@ async def login(auth_form:  OAuth2PasswordRequestForm = Depends()):
     role = role_item.role
 
     token = await encode_token(user_id, role)
+    this_user = await UserModel.get(id=user.id)
+    usr = await User_Pydantic.from_tortoise_orm(this_user)
     
-    return {'access_token': token, "token_type": "bearer"}
+    return {'access_token': token, "token_type": "bearer", "user": usr}
