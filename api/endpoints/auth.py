@@ -54,6 +54,20 @@ async def login(auth_form:  OAuth2PasswordRequestForm = Depends()):
     if not user or not user.verify_password(password=auth_form.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid username or password')
 
+    UserPrivilege.generate_user_role(user_id = this_user.id)
+    user_id = UserPrivilege.user_id
+    role = UserPrivilege.role
+    # Ensure all roles are saved to the db before registering the role to user
+    db_roles = UserRoleModel.fetch_all()
+    all_privileges = UserPrivilege.all_privileges
+    if len(db_roles) == 0:
+        for key, value in all_privileges.items():
+            new_role = RoleModel(role=value)
+            new_role.insert_record()
+    # Link role to user
+    new_user_role = UserRoleModel(user_id=user_id, role_id=role)
+    new_user_role.insert_record()
+    
     user_id = user.id
     user_role = await UserRoleModel.get(user_id=user_id)
     role_id = user_role.role_id
