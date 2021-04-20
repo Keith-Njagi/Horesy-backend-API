@@ -37,7 +37,8 @@ app = FastAPI(
         description="API to manage authentication, hotel bookings, checkins and payments", 
         version="0.1.0", 
         openapi_tags=tags_metadata, 
-        openapi_url="/api/v1/openapi.json"
+        openapi_url="/api/v1/openapi.json",
+        redoc_url="/"
     )
 
 app.add_middleware(

@@ -1,9 +1,13 @@
 aiosqlite==0.16.1
+asyncpg==0.22.0
+bcrypt==3.2.0
+cffi==1.14.5
 click==7.1.2
 fastapi==0.63.0
 h11==0.12.0
 iso8601==0.1.14
 passlib==1.7.4
+pycparser==2.20
 pydantic==1.8.1
 PyJWT==2.0.1
 pypika-tortoise==0.1.0
