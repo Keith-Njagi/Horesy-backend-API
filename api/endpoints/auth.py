@@ -36,7 +36,7 @@ async def register(auth_detail: UserIn, role: Optional[str]=None):
     usr_role = UserPrivilege.role
     
     if role in UserPrivilege.all_privileges.values():
-        db_role = await RoleModel.get(role=role)
+        db_role = await RoleModel.filter(role=role)
         new_user_role = await UserRoleModel.create(user_id=user_id, role_id=db_role.id)
     else:     
         new_user_role = await UserRoleModel.create(user_id=user_id, role_id=usr_role)

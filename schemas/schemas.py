@@ -1,6 +1,7 @@
 from typing import Optional
+from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from tortoise import Tortoise
 from tortoise.contrib.pydantic import pydantic_model_creator
 
@@ -42,3 +43,11 @@ BookingIn_Pydantic = pydantic_model_creator(BookingModel, name="BookingIn", excl
 
 Payment_Pydantic = pydantic_model_creator(PaymentModel, name="Payment")
 PaymentIn_Pydantic = pydantic_model_creator(PaymentModel, name="PaymentIn", exclude_readonly=True)
+
+class Booking(BaseModel):
+    room_id:int
+    full_name:str
+    email:EmailStr
+    phone:str
+    date_from:Optional[datetime]
+    date_to:Optional[datetime]
