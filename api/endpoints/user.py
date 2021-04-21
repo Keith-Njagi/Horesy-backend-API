@@ -9,6 +9,9 @@ from utilities.auth import RoleChecker, get_current_user, get_current_user_token
 
 router = APIRouter(prefix='/api/usr', tags=["user"])
 
+@router.get('/', response_model=[User_Pydantic])
+async def get_users():
+    return await User_Pydantic.from_queryset(UserModel.all())
 
 @router.put('/update/', status_code=status.HTTP_200_OK,)
 async def update_user(user: UserIn_Pydantic, current_user: User_Pydantic = Depends(get_current_user)) -> JSONResponse:
