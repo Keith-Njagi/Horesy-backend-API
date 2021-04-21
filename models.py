@@ -45,8 +45,8 @@ class RoleModel(Model):
     class Meta:
         table="roles"
 
-    def __str__(self):
-        return self.role
+    # def __str__(self):
+    #     return self.role
 
 class UserRoleModel(Model):
     id = fields.IntField(pk=True)
