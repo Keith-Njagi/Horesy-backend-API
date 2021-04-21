@@ -64,7 +64,7 @@ async def login(auth_form:  OAuth2PasswordRequestForm = Depends()):
     all_privileges = UserPrivilege.all_privileges
     if db_roles.count(db_roles) == 0:
         for key, value in all_privileges.items():
-            new_role = RoleModel.create(role=value)
+            new_role = await RoleModel.create(role=value)
     # Link role to user
     new_user_role = UserRoleModel.create(user_id=user_id, role_id=role)
     
