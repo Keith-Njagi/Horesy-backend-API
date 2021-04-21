@@ -14,17 +14,18 @@ async def get_rooms():
     # return await Room_Pydantic.from_queryset(RoomModel.all())
     return await Room_Pydantic.from_queryset(RoomModel.filter(is_booked=False))
 
-<<<<<<< HEAD
+
 @router.post('/', response_model=Room_Pydantic)
 async def post_room(room: RoomIn_Pydantic, current_user_role:Role_Pydantic=Depends(get_current_user_role)):
-    # if current_user_role.role != 'Admin':
-    #     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
-=======
+    if current_user_role != 'Admin':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
+    obj = await RoomModel.create(**room.dict(exclude_unset=True))
+    return await Room_Pydantic.from_tortoise_orm(obj)
+
 @router.post('/')
 async def post_room(room: RoomIn_Pydantic, current_user_role:str=Depends(get_current_user_role)):
     if current_user_role != 'Admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
->>>>>>> e71b91fc39056facc4d5ffada901972e6a7aa649
     obj = await RoomModel.create(**room.dict(exclude_unset=True))
     return await Room_Pydantic.from_tortoise_orm(obj)
 
