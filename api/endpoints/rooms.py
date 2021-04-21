@@ -15,8 +15,8 @@ async def get_rooms():
     return await Room_Pydantic.from_queryset(RoomModel.filter(is_booked=False))
 
 @router.post('/')
-async def post_room(room: RoomIn_Pydantic, current_user_role:Role_Pydantic=Depends(get_current_user_role)):
-    if current_user_role.role != 'Admin':
+async def post_room(room: RoomIn_Pydantic, current_user_role:str=Depends(get_current_user_role)):
+    if current_user_role != 'Admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
     obj = await RoomModel.create(**room.dict(exclude_unset=True))
     return await Room_Pydantic.from_tortoise_orm(obj)
@@ -29,15 +29,15 @@ async def get_single_room(id:int):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Room {id} does not exist')
 
 @router.put('/{id}')
-async def unbook_room(id: int, current_user_role:Role_Pydantic=Depends(get_current_user_role)):
-    if current_user_role.role != 'Admin':
+async def unbook_room(id: int, current_user_role:str=Depends(get_current_user_role)):
+    if current_user_role != 'Admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
     obj = await RoomModel.filter(id=id).update(is_booked=False)
     return await Room_Pydantic.from_tortoise_orm(obj)
 
 @router.delete('/{id}')
-async def delete_room(id:int, current_user_role:Role_Pydantic=Depends(get_current_user_role)) -> JSONResponse:
-    if current_user_role.role != 'Admin':
+async def delete_room(id:int, current_user_role:str=Depends(get_current_user_role)) -> JSONResponse:
+    if current_user_role != 'Admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
     deleted = await RoomTypeModel.filter(id=id).delete()
     if not deleted:
@@ -52,9 +52,9 @@ async def get_room_types():
     
 
 @router.post('/types', response_model=RoomType_Pydantic)
-async def post_room_type(room_type: RoomTypeIn_Pydantic, current_user_role:Role_Pydantic=Depends(get_current_user_role)):
-    # if current_user_role.role != 'Admin':
-    #     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
+async def post_room_type(room_type: RoomTypeIn_Pydantic, current_user_role:str=Depends(get_current_user_role)):
+    if current_user_role != 'Admin':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
     obj = await RoomTypeModel.create(**room_type.dict(exclude_unset=True))
     return await RoomType_Pydantic.from_tortoise_orm(obj)
 
@@ -66,16 +66,16 @@ async def get_single_room_type(id:int):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Room type {id} does not exist')
 
 @router.put('/types/{id}')
-async def update_room_type(room_type: RoomTypeIn_Pydantic, current_user_role:Role_Pydantic=Depends(get_current_user_role)):
-    # if current_user_role.role != 'Admin':
-    #     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
+async def update_room_type(room_type: RoomTypeIn_Pydantic, current_user_role:str=Depends(get_current_user_role)):
+    if current_user_role != 'Admin':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
     obj = await RoomTypeModel.filter(id=id).update(**room_type.dict())
     return await RoomType_Pydantic.from_tortoise_orm(obj)
 
 @router.delete('/types/{id}')
-async def delete_room_type(id:int, current_user_role:Role_Pydantic=Depends(get_current_user_role)) -> JSONResponse:
-    # if current_user_role.role != 'Admin':
-    #     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
+async def delete_room_type(id:int, current_user_role:str=Depends(get_current_user_role)) -> JSONResponse:
+    if current_user_role != 'Admin':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
     deleted = await RoomTypeModel.filter(id=id).delete()
     if not deleted:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Room type {id} not found')

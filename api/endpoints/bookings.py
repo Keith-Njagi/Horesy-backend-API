@@ -8,8 +8,8 @@ router = APIRouter(prefix='/api/bookings', tags=["bookings"])
 # CRUD FOR BOOKINGS
 
 @router.get('/')
-async def get_bookings(current_user_role:Role_Pydantic=Depends(get_current_user_role)):
-    if current_user_role.role != 'Admin':
+async def get_bookings(current_user_role:str=Depends(get_current_user_role)):
+    if current_user_role != 'Admin':
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
     return await Booking_Pydantic.from_queryset(BookingModel.all())
 
@@ -40,3 +40,8 @@ async def delete_booking(id:int, current_user_role:Role_Pydantic=Depends(get_cur
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Booking {id} not found')
     return JSONResponse(status_code=status.HTTP_200_OK, content='Deleted booking {id}')
 
+@router.get('/calendar')
+async def get_calendar_bookings(current_user_role:str=Depends(get_current_user_role)):
+    if current_user_role != 'Admin':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
+    return await Booking_Pydantic.from_queryset(BookingModel.all())

@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from starlette.responses import JSONResponse
@@ -9,7 +10,7 @@ from utilities.auth import RoleChecker, get_current_user, get_current_user_token
 
 router = APIRouter(prefix='/api/usr', tags=["user"])
 
-@router.get('/', response_model=[User_Pydantic])
+@router.get('/', response_model=List[User_Pydantic])
 async def get_users():
     return await User_Pydantic.from_queryset(UserModel.all())
 
