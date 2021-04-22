@@ -24,8 +24,8 @@ class UserModel(Model):
     class PydanticMeta:
         exclude = ["password_hash", "disabled"]
 
-    def __str__(self):
-        return self.full_name
+    # def __str__(self):
+    #     return self.full_name
 
     @classmethod
     async def get_user(id:int):
@@ -70,8 +70,8 @@ class RoomTypeModel(Model):
         table="room_types"
         ordering = ["id"]
 
-    def __str__(self):
-        return self.name
+    # def __str__(self):
+    #     return self.name
 
 class RoomModel(Model):
     id = fields.IntField(pk=True)
