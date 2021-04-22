@@ -1,6 +1,7 @@
 import requests
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 
+from passlib.hash import bcrypt
 from models import BookingModel, RoomModel, UserModel
 from schemas.schemas import Booking_Pydantic, BookingIn_Pydantic, User_Pydantic, Role_Pydantic, Room_Pydantic, Booking
 from utilities.auth import get_current_user, get_current_user_role
@@ -18,39 +19,27 @@ async def get_bookings(current_user_role:str=Depends(get_current_user_role)):
 async def post_booking(booking: Booking):
     user_email = booking.email
     usr_by_email = await UserModel.filter(email=user_email)
-    print('============================')
-    print(usr_by_email.count(usr_by_email))
-    print('============================')
-
+    
     user_id = 0
-    print(1)
-    if usr_by_email.count(usr_by_email) == 0:
+    if len(usr_by_email) == 0:
         auth_detail = {
             "full_name": booking.full_name,
             "email": user_email,
-            "phone": booking.phone,
-            "password": booking.phone
+            "phone": booking.phone
         }
-        print(2)
-        new_user = requests.post(url='http://127.0.0.1:8000/api/auth/register', json=auth_detail)
-        print(new_user.json())
-
-        new_usr = new_user.json()
-        user_id = new_usr['id']
-
-    if usr_by_email.count(usr_by_email) != 0:
-        print(3)
-        print('============================')
-        print(usr_by_email[0].id)
-        print('============================')
-
+        hashed_password = bcrypt.hash(booking.phone)
+        new_usr = await UserModel.create(**auth_detail, password_hash=hashed_password)
+        user_id = new_usr.id
+    
+    if len(usr_by_email) != 0:
         user_id = usr_by_email[0].id
 
-    print(4)
+    booking_by_date_from = await BookingModel.filter(date_from=booking.date_from)
+    if len(booking_by_date_from):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='The chosen day has been booked')
+
     obj = await BookingModel.create(room_id=booking.room_id, user_id=user_id, date_from=booking.date_from, date_to=booking.date_to)
-    print(5)
     await RoomModel.filter(id=booking.room_id).update(is_booked=True)
-    print(6)
     return await Booking_Pydantic.from_tortoise_orm(obj)
 
 @router.get('/{id}')
