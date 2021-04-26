@@ -28,3 +28,11 @@ async def deactivate_account(current_user:User_Pydantic = Depends(get_current_us
 async def activate_account(current_user:User_Pydantic = Depends(get_current_user)) -> JSONResponse:
     await UserModel.filter(id=current_user.id).update(disabled=False)
     return JSONResponse(status_code=status.HTTP_200_OK, content='User account activated')
+
+@router.get("/users/me", 
+summary="return authorized user"
+)
+async def read_users_me(current_user:User_Pydantic = Depends(get_current_user)):
+	print("Here", current_user)
+	return await User_Pydantic.from_tortoise_orm(current_user)
+	# return await current_user.dict()
