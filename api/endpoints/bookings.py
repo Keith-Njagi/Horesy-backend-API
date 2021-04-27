@@ -1,7 +1,9 @@
+from typing import List
+
 import requests
+from passlib.hash import bcrypt
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from passlib.hash import bcrypt
 from models import BookingModel, RoomModel, UserModel
 from schemas.schemas import Booking_Pydantic, BookingIn_Pydantic, User_Pydantic, Role_Pydantic, Room_Pydantic, Booking
 from utilities.auth import get_current_user, get_current_user_role
@@ -42,6 +44,15 @@ async def post_booking(booking: Booking):
     await RoomModel.filter(id=booking.room_id).update(is_booked=True)
     return await Booking_Pydantic.from_tortoise_orm(obj)
 
+@router.get('/calendar', response_model=List[Booking_Pydantic])
+async def get_calendar_bookings(current_user_role:str=Depends(get_current_user_role)):
+    try:
+        if current_user_role != 'Admin':
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
+        return await Booking_Pydantic.from_queryset(BookingModel.all())
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e.args)
+        
 @router.get('/{id}')
 async def get_single_booking(id:int):
     booking = await BookingModel.get(id=id)
@@ -63,8 +74,3 @@ async def delete_booking(id:int, current_user_role:Role_Pydantic=Depends(get_cur
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Booking {id} not found')
     return JSONResponse(status_code=status.HTTP_200_OK, content='Deleted booking {id}')
 
-@router.get('/calendar')
-async def get_calendar_bookings(current_user_role:str=Depends(get_current_user_role)):
-    if current_user_role != 'Admin':
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'You are not authorised to use this resource')
-    return await Booking_Pydantic.from_queryset(BookingModel.all())
